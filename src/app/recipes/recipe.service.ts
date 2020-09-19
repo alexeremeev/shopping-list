@@ -1,34 +1,18 @@
 import {Recipe} from './recipe.model';
 import {Injectable} from '@angular/core';
 import {Ingredient} from '../shared/ingredient.model';
-import {ShoppingListService} from '../shopping-list/shopping-list.service';
 import {Subject} from 'rxjs';
+import {Store} from '@ngrx/store';
+import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
+import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer'
 
 @Injectable()
 export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
-/*
-  private recipes: Recipe[] = [
-    new Recipe(
-      'tasty schnitzel',
-      'Tasty schnitzel wow',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Breitenlesau_Krug_Br%C3%A4u_Schnitzel.JPG/1920px-Breitenlesau_Krug_Br%C3%A4u_Schnitzel.JPG',
-      [
-        new Ingredient('Meat', 1),
-        new Ingredient('French Fries', 20)
-      ]),
-    new Recipe('big burger',
-      'just a very big burger',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/1920px-RedDot_Burger.jpg',
-      [
-        new Ingredient('Buns', 2),
-        new Ingredient('Meat', 1)
-      ])
-  ];*/
 
   private recipes: Recipe[] = [];
 
-  constructor(private shoppingListService: ShoppingListService) {
+  constructor(private store: Store<fromShoppingList.AppState>) {
   }
 
   getRecipes(): Recipe[] {
@@ -40,7 +24,7 @@ export class RecipeService {
   }
 
   addIngredientsToShoppingList(ingredients: Ingredient[]) {
-    this.shoppingListService.addIngredients(ingredients);
+    this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
   }
 
   addRecipe(recipe: Recipe) {
